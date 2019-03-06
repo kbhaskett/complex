@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t kbhaskett/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run kbhaskett/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t kbhaskett/multi-client ./client
+  - docker build -t kbhaskett/multi-nginx ./nginx
+  - docker build -t kbhaskett/multi-server ./server
+  - docker build -t kbhaskett/multi-worker ./worker
+  - docker login -u "$DOCKER_ID" -p "$DOCKER_PASSWORD"
+  - docker push kbhaskett/multi-client
+  - docker push kbhaskett/multi-nginx
+  - docker push kbhaskett/multi-server
+  - docker push kbhaskett/multi-worker
