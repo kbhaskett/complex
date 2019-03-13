@@ -13,7 +13,7 @@ after_success:
   - docker build -t kbhaskett/multi-nginx ./nginx
   - docker build -t kbhaskett/multi-server ./server
   - docker build -t kbhaskett/multi-worker ./worker
-  - docker login -u "$DOCKER_ID" -p "$DOCKER_PASSWORD"
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push kbhaskett/multi-client
   - docker push kbhaskett/multi-nginx
   - docker push kbhaskett/multi-server
@@ -22,8 +22,8 @@ after_success:
 deploy:
   provider: elasticbeanstalk
   region: us-east-2
-  app: multi-docker
-  env: MultiDocker-env
+  app: docker-multi
+  env: DockerMulti-env
   bucket_name: elasticbeanstalk-us-east-2-338706605177
   bucket_path: docker-multi
   on:
